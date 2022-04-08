@@ -1,7 +1,11 @@
 import 'dart:async';
 
+import 'package:car_garage/bloc_cg/car_list/car_list_bloc.dart';
+import 'package:car_garage/network/secure_storage.dart';
+import 'package:car_garage/repository/car_list_repository.dart';
 import 'package:car_garage/route/router.gr.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
 
@@ -13,7 +17,7 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     try {
       await dotenv.load(fileName: "assets/environmental/.env");
-      Logger().i(dotenv.env['API_KEY']);
+      SecureStorage.writeApiKey(dotenv.env['API_KEY'] ?? "");
     } catch (e) {
       Logger().i("Dotenv not loaded");
       Logger().i(e);
@@ -31,6 +35,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   final GlobalKey<NavigatorState>? _navigatorKey;
+
   const MyApp(this._navigatorKey, {Key? key}) : super(key: key);
 
   @override
@@ -39,6 +44,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late AppRouter _appRouter;
+
   @override
   void initState() {
     super.initState();
@@ -49,18 +55,25 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: MaterialApp.router(
-        routerDelegate: _appRouter.delegate(),
-        routeInformationParser: _appRouter.defaultRouteParser(),
-        supportedLocales: const [
-          Locale("pl"),
-          Locale("en"),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<CarListBloc>(
+            create: (context) => CarListBloc(CarListRepository()),
+          ),
         ],
-        theme: ThemeData(
-          primaryColor: cPrimaryColor,
-          accentColor: cAccentColor,
+        child: MaterialApp.router(
+          routerDelegate: _appRouter.delegate(),
+          routeInformationParser: _appRouter.defaultRouteParser(),
+          supportedLocales: const [
+            Locale("pl"),
+            Locale("en"),
+          ],
+          theme: ThemeData(
+            primaryColor: cPrimaryColor,
+            accentColor: cAccentColor,
+          ),
+          builder: (context, router) => router!,
         ),
-        builder: (context, router) => router!,
       ),
     );
   }
