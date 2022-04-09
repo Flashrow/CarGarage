@@ -19,15 +19,11 @@ const String addCarScreen = "addCarsScreen";
       initial: false,
       page: CarDetailsScreen,
       path: carDetailsScreen,
-      transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
-      durationInMilliseconds: 300,
     ),
     CustomRoute(
       initial: false,
       page: AddCarScreen,
       path: addCarScreen,
-      transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
-      durationInMilliseconds: 300,
     ),
   ],
 )

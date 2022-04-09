@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:injectable/injectable.dart';
 
 import '../secure_storage.dart';
@@ -11,7 +11,7 @@ class DioClient {
       BaseOptions(
         connectTimeout: 10000,
         receiveTimeout: 10000,
-        baseUrl: dotenv.get('API_URL'),
+        baseUrl: FlutterConfig.get('API_URL'),
         validateStatus: (status) {
           return status! < 400;
         },

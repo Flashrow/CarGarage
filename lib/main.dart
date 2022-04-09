@@ -4,9 +4,10 @@ import 'package:car_garage/bloc_cg/car_list/car_list_bloc.dart';
 import 'package:car_garage/network/secure_storage.dart';
 import 'package:car_garage/repository/car_list_repository.dart';
 import 'package:car_garage/route/router.gr.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:logger/logger.dart';
 
 import 'common/colors.dart';
@@ -16,14 +17,23 @@ void main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     try {
-      await dotenv.load(fileName: "assets/environmental/.env");
-      SecureStorage.writeApiKey(dotenv.env['API_KEY'] ?? "");
+      await FlutterConfig.loadEnvVariables();
+      SecureStorage.writeApiKey(FlutterConfig.get('API_KEY') ?? "");
     } catch (e) {
       Logger().i("Dotenv not loaded");
       Logger().i(e);
     }
-    runApp(MyApp(_navigatorKey));
+    await EasyLocalization.ensureInitialized();
+    runApp(EasyLocalization(
+        supportedLocales: const [
+          Locale("pl"),
+          Locale("en"),
+        ],
+        path: "assets/translations",
+        fallbackLocale: const Locale('pl'),
+        child: MyApp(_navigatorKey)));
   }, (error, stackTrace) {
+    throw (error);
     if (_navigatorKey.currentContext != null) {
       ScaffoldMessenger.of(_navigatorKey.currentContext!)
           .showSnackBar(const SnackBar(
@@ -44,11 +54,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late AppRouter _appRouter;
+  final CarListBloc _carListBloc = CarListBloc(CarListRepository());
 
   @override
   void initState() {
     super.initState();
     _appRouter = AppRouter(widget._navigatorKey);
+    _carListBloc.add(FetchCarList());
   }
 
   @override
@@ -58,16 +70,15 @@ class _MyAppState extends State<MyApp> {
       child: MultiBlocProvider(
         providers: [
           BlocProvider<CarListBloc>(
-            create: (context) => CarListBloc(CarListRepository()),
+            create: (context) => _carListBloc,
           ),
         ],
         child: MaterialApp.router(
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
           routerDelegate: _appRouter.delegate(),
           routeInformationParser: _appRouter.defaultRouteParser(),
-          supportedLocales: const [
-            Locale("pl"),
-            Locale("en"),
-          ],
           theme: ThemeData(
             primaryColor: cPrimaryColor,
             accentColor: cAccentColor,

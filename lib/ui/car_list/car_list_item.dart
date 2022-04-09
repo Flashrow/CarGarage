@@ -1,25 +1,28 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:car_garage/common/colors.dart';
+import 'package:car_garage/route/router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../network/models/car_dto.dart';
+
 class CarListItem extends StatelessWidget {
-  final String registrationNumber;
-  final String carBrand;
-  final String carModel;
-  final String carColor;
-  const CarListItem(
-      {Key? key,
-      required this.registrationNumber,
-      required this.carBrand,
-      required this.carModel,
-      required this.carColor})
-      : super(key: key);
+  final CarDto? carDto;
+  const CarListItem({
+    Key? key,
+    this.carDto,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       splashColor: cPrimaryColor.withOpacity(0.3),
-      onTap: () {},
+      onTap: () {
+        if (carDto != null) {
+          AutoRouter.of(context)
+              .navigate(CarDetailsScreenRoute(carDto: carDto!));
+        }
+      },
       child: Container(
         decoration: BoxDecoration(
           border: Border(
@@ -43,14 +46,14 @@ class CarListItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        carBrand + " ",
+                        (carDto?.brand ?? "") + " ",
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       Text(
-                        carModel,
+                        carDto?.model ?? "",
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
@@ -68,9 +71,9 @@ class CarListItem extends StatelessWidget {
                           fontWeight: FontWeight.w300,
                         ),
                       ),
-                      SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       Text(
-                        registrationNumber,
+                        carDto?.registration ?? "",
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -84,9 +87,9 @@ class CarListItem extends StatelessWidget {
               Container(
                 width: 10,
                 height: 65,
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.all(
+                decoration: BoxDecoration(
+                  color: carDto?.color,
+                  borderRadius: const BorderRadius.all(
                     Radius.circular(20),
                   ),
                 ),

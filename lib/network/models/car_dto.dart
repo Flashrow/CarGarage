@@ -1,13 +1,15 @@
+import 'package:flutter/cupertino.dart';
+
 class CarDto {
   String? _id;
   String? brand;
   String? model;
-  String? color;
+  Color? color;
   String? registration;
   DateTime? year;
   String? ownerId;
-  double? lat;
-  double? lng;
+  num? lat;
+  num? lng;
 
   CarDto(
       {this.brand,
@@ -20,13 +22,14 @@ class CarDto {
       this.lng});
 
   CarDto.fromJson(dynamic json) {
-    _id = json["_id"];
-    brand = json["brand"];
-    model = json["model"];
-    color = json["color"];
-    registration = json["registration"];
+    _id = json["_id"].toString();
+    brand = json["brand"].toString();
+    model = json["model"].toString();
+    color =
+        Color(int.parse("0xFF" + json["color"].toString().replaceAll("#", "")));
+    registration = json["registration"].toString();
     year = DateTime.tryParse(json["year"]);
-    ownerId = json["ownerId"];
+    ownerId = json["ownerId"].toString();
     lat = json["lat"];
     lng = json["lng"];
   }
