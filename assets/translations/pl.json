@@ -1,4 +1,21 @@
 {
   "carGarage" : "CarGarage",
-  "carsListTitle" : "Lista samochodów:"
+  "carsListTitle" : "Lista samochodów:",
+  "male" : "Mężczyzna",
+  "female" : "Kobieta",
+  "other" : "Inny",
+  "unavailable" : "Niedostępny",
+  "firstName" : "Imię",
+  "lastName" : "Nazwisko",
+  "birthDate" : "Data urodzenia",
+  "sex" : "Płeć",
+  "noDataAboutOwner" : "Brak informacji o właścicielu",
+  "registrationNumber" : "Numer rejestracyjny",
+  "carDetails" : "Szczegóły samochodu",
+  "vehicleData" : "Dane pojazdu",
+  "brand" : "Marka",
+  "model" : "Model",
+  "productionYear" : "Rok produkcji",
+  "ownerData" : "Dane właściciela",
+  "carLocation" : "Lokalizacja pojazdu"
 }

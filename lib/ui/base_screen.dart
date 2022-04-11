@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../common/colors.dart';
 
-class BaseScreen extends StatelessWidget {
+class BaseScreen extends StatefulWidget {
   final Widget? child;
   final FloatingActionButton? floatingActionButton;
   const BaseScreen({
@@ -13,6 +13,11 @@ class BaseScreen extends StatelessWidget {
     this.floatingActionButton,
   }) : super(key: key);
 
+  @override
+  State<BaseScreen> createState() => _BaseScreenState();
+}
+
+class _BaseScreenState extends State<BaseScreen> {
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -24,7 +29,8 @@ class BaseScreen extends StatelessWidget {
           topRight: Radius.circular(20),
         ),
         child: Scaffold(
-          floatingActionButton: floatingActionButton,
+          backgroundColor: Colors.white,
+          floatingActionButton: widget.floatingActionButton,
           appBar: AppBar(
             backgroundColor: cPrimaryColor,
             actions: [
@@ -33,9 +39,7 @@ class BaseScreen extends StatelessWidget {
                 child: InkWell(
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
                   onTap: () {
-                    context.setLocale(context.locale == const Locale("pl")
-                        ? const Locale("en")
-                        : const Locale("pl"));
+                    onChangeLanguage(context);
                   },
                   child: Image.asset(
                     context.locale == const Locale("pl")
@@ -52,9 +56,15 @@ class BaseScreen extends StatelessWidget {
               style: GoogleFonts.fredokaOne(fontSize: 24),
             ),
           ),
-          body: child,
+          body: widget.child,
         ),
       )),
     );
+  }
+
+  void onChangeLanguage(BuildContext context) {
+    EasyLocalization.of(context)?.setLocale(context.locale == const Locale("pl")
+        ? const Locale("en")
+        : const Locale("pl"));
   }
 }

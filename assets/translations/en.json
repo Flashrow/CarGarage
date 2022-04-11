@@ -1,4 +1,21 @@
 {
   "carGarage" : "CarGarage",
-  "carsListTitle" : "Cars list:"
+  "carsListTitle" : "Cars list:",
+  "male" : "Male",
+  "female" : "Female",
+  "other" : "Other",
+  "unavailable" : "Unavailable",
+  "firstName" : "First name",
+  "lastName" : "Last name",
+  "birthDate" : "Date of birth",
+  "sex" : "Sex",
+  "noDataAboutOwner" : "No data about owner",
+  "registrationNumber" : "Registration",
+  "carDetails" : "Car details",
+  "vehicleData" : "Vehicle data",
+  "brand" : "Brand",
+  "model" : "Model",
+  "productionYear" : "Production year",
+  "ownerData" : "Owner data",
+  "carLocation" : "Car location"
 }

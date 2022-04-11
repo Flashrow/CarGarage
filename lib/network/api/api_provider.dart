@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../models/car_dto.dart';
+import '../models/person_dto.dart';
 import 'endpoints.dart';
 
 part 'api_provider.g.dart';
@@ -15,4 +16,7 @@ abstract class ApiProvider {
 
   @GET(Endpoints.carList)
   Future<List<CarDto>> getCarList();
+
+  @GET(Endpoints.personList)
+  Future<List<PersonDto>> getPersonList();
 }

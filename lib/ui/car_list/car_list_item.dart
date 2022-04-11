@@ -1,8 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:car_garage/bloc_cg/persons_list/persons_list_bloc.dart';
 import 'package:car_garage/common/colors.dart';
+import 'package:car_garage/common/styles.dart';
 import 'package:car_garage/route/router.gr.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../network/models/car_dto.dart';
 
@@ -21,6 +24,8 @@ class CarListItem extends StatelessWidget {
         if (carDto != null) {
           AutoRouter.of(context)
               .navigate(CarDetailsScreenRoute(carDto: carDto!));
+          BlocProvider.of<PersonsListBloc>(context)
+              .add(FetchPerson(carDto!.ownerId ?? ""));
         }
       },
       child: Container(
@@ -47,17 +52,11 @@ class CarListItem extends StatelessWidget {
                     children: [
                       Text(
                         (carDto?.brand ?? "") + " ",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: title2Text,
                       ),
                       Text(
                         carDto?.model ?? "",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: title2Text,
                       )
                     ],
                   ),
@@ -65,19 +64,13 @@ class CarListItem extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        "Nr rejestracyjny:",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w300,
-                        ),
+                        "registrationNumber".tr() + ":",
+                        style: regularText,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         carDto?.registration ?? "",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: regularSemiboldText,
                       ),
                     ],
                   ),

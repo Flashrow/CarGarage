@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:car_garage/bloc_cg/car_list/car_list_bloc.dart';
+import 'package:car_garage/bloc_cg/language/language_cubit.dart';
+import 'package:car_garage/bloc_cg/persons_list/persons_list_bloc.dart';
 import 'package:car_garage/network/secure_storage.dart';
 import 'package:car_garage/repository/car_list_repository.dart';
+import 'package:car_garage/repository/person_list_repository.dart';
 import 'package:car_garage/route/router.gr.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -72,8 +75,14 @@ class _MyAppState extends State<MyApp> {
           BlocProvider<CarListBloc>(
             create: (context) => _carListBloc,
           ),
+          BlocProvider<PersonsListBloc>(
+            create: (context) => PersonsListBloc(
+              PersonListRepository(),
+            ),
+          ),
         ],
         child: MaterialApp.router(
+          key: UniqueKey(),
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
