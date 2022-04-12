@@ -19,7 +19,7 @@ class CarListScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          AutoRouter.of(context).navigate(const AddCarScreenRoute());
+          AutoRouter.of(context).navigate(AddCarScreenRoute());
         },
       ),
       child: Column(

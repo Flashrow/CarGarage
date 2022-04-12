@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:car_garage/bloc_cg/car_list/car_list_bloc.dart';
-import 'package:car_garage/bloc_cg/language/language_cubit.dart';
 import 'package:car_garage/bloc_cg/persons_list/persons_list_bloc.dart';
 import 'package:car_garage/network/secure_storage.dart';
 import 'package:car_garage/repository/car_list_repository.dart';
@@ -36,7 +35,6 @@ void main() async {
         fallbackLocale: const Locale('pl'),
         child: MyApp(_navigatorKey)));
   }, (error, stackTrace) {
-    throw (error);
     if (_navigatorKey.currentContext != null) {
       ScaffoldMessenger.of(_navigatorKey.currentContext!)
           .showSnackBar(const SnackBar(

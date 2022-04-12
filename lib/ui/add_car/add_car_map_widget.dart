@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -21,19 +23,23 @@ class _AddCarMapWidgetState extends State<AddCarMapWidget> {
     return SizedBox(
       height: 350,
       child: GoogleMap(
-        initialCameraPosition: const CameraPosition(
-          target: LatLng(52.041847, 19.543805),
-          zoom: 8,
-        ),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        onLongPress: (LatLng latLng) => setMarker(latLng),
-        onTap: (LatLng latLng) => setMarker(latLng),
-        markers: {
-          carLocation,
-        },
-      ),
+          initialCameraPosition: const CameraPosition(
+            target: LatLng(52.041847, 19.543805),
+            zoom: 5.5,
+          ),
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+          onLongPress: (LatLng latLng) => setMarker(latLng),
+          onTap: (LatLng latLng) => setMarker(latLng),
+          markers: {
+            carLocation,
+          },
+          gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+            Factory<OneSequenceGestureRecognizer>(
+              () => EagerGestureRecognizer(),
+            ),
+          }),
     );
   }
 

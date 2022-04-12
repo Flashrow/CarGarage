@@ -29,6 +29,7 @@ class _BaseScreenState extends State<BaseScreen> {
           topRight: Radius.circular(20),
         ),
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           backgroundColor: Colors.white,
           floatingActionButton: widget.floatingActionButton,
           appBar: AppBar(
