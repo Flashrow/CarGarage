@@ -1,4 +1,5 @@
 import 'package:car_garage/bloc_cg/form_field/validated_form_field_cubit.dart';
+import 'package:car_garage/bloc_cg/persons_list/persons_list_bloc.dart';
 import 'package:car_garage/common/styles.dart';
 import 'package:car_garage/ui/add_car/add_car_map_widget.dart';
 import 'package:car_garage/ui/base_screen.dart';
@@ -6,10 +7,14 @@ import 'package:car_garage/ui/widget/custom_textfield_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../bloc_cg/add_car/add_car_bloc.dart';
 import '../../bloc_cg/add_car/add_car_field_enum.dart';
 import '../../common/colors.dart';
+import '../../network/models/person_dto.dart';
+import '../widget/custom_button_widget.dart';
 
 class AddCarScreen extends StatefulWidget {
   const AddCarScreen({Key? key}) : super(key: key);
@@ -24,6 +29,9 @@ class _AddCarScreenState extends State<AddCarScreen> {
   late ValidatedFormFieldCubit modelFieldCubit;
   late ValidatedFormFieldCubit registrationFieldCubit;
   late ValidatedFormFieldCubit yearFieldCubit;
+  LatLng? carPosition;
+  Color? carColor = Colors.green;
+  PersonDto? carOwner;
 
   @override
   void initState() {
@@ -146,7 +154,63 @@ class _AddCarScreenState extends State<AddCarScreen> {
                       style: regularSemiboldText.apply(color: cPrimaryColor),
                     ),
                   ),
-                  const AddCarMapWidget(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: carColor,
+                            borderRadius:
+                                BorderRadius.all(const Radius.circular(8)),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        CustomButtonWidget(
+                          title: "pickCarColor".tr(),
+                          onTap: () {
+                            onPickCarColorButton(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 28),
+                    child: Text(
+                      "Car owner:",
+                      style: regularSemiboldText.apply(color: cPrimaryColor),
+                    ),
+                  ),
+                  BlocBuilder<PersonsListBloc, PersonsListState>(
+                    builder: (context, state) {
+                      if (state is PersonsListFetched) {
+                        return pickOwnerDropdown(state);
+                      }
+                      return CircularProgressIndicator();
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 28),
+                    child: Text(
+                      "selectCarLocationOnMap".tr(),
+                      style: regularSemiboldText.apply(
+                        color: cPrimaryColor,
+                      ),
+                    ),
+                  ),
+                  AddCarMapWidget(setCarPosition: (pinPosition) {
+                    carPosition = pinPosition;
+                    addCarBloc.add(SetFieldValidity(
+                        fieldType: AddCarFieldEnum.lat, isValid: true));
+                    addCarBloc.add(SetFieldValidity(
+                        fieldType: AddCarFieldEnum.lng, isValid: true));
+                  }),
                 ],
               ),
             ),
@@ -158,7 +222,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
               return InkWell(
                 child: Container(
                   height: 40,
-                  color: Colors.red,
+                  color: state is FormValid ? Colors.green : Colors.red,
                 ),
               );
             },
@@ -166,6 +230,70 @@ class _AddCarScreenState extends State<AddCarScreen> {
           const SizedBox(height: 10),
         ],
       ),
+    );
+  }
+
+  Widget pickOwnerDropdown(PersonsListFetched state) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: DropdownButton<PersonDto>(
+        value: carOwner,
+        icon: const Icon(Icons.arrow_downward),
+        elevation: 16,
+        style: const TextStyle(color: Colors.deepPurple),
+        underline: Container(
+          height: 2,
+          color: Colors.deepPurpleAccent,
+        ),
+        onChanged: (PersonDto? newValue) {
+          setState(() {
+            carOwner = newValue!;
+          });
+          addCarBloc.add(SetFieldValidity(
+              fieldType: AddCarFieldEnum.ownerId, isValid: true));
+        },
+        items: state.personsList
+            .map<DropdownMenuItem<PersonDto>>((PersonDto person) {
+          return DropdownMenuItem<PersonDto>(
+            value: person,
+            child:
+                Text((person.firstName ?? "") + " " + (person.lastName ?? "")),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  void onPickCarColorButton(BuildContext context) {
+    Color pickerColor = carColor ?? Colors.green;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('pickCarColor'.tr()),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              pickerColor: pickerColor,
+              onColorChanged: (color) => setState(() => pickerColor = color),
+            ),
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('selectColor'.tr()),
+              onPressed: () {
+                setState(() => carColor = pickerColor);
+                addCarBloc.add(
+                  SetFieldValidity(
+                    fieldType: AddCarFieldEnum.color,
+                    isValid: true,
+                  ),
+                );
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

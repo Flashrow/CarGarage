@@ -40,11 +40,9 @@ class AppRouter extends _i4.RootStackRouter {
           barrierDismissible: false);
     },
     AddCarScreenRoute.name: (routeData) {
-      final args = routeData.argsAs<AddCarScreenRouteArgs>(
-          orElse: () => const AddCarScreenRouteArgs());
       return _i4.CustomPage<dynamic>(
           routeData: routeData,
-          child: _i3.AddCarScreen(key: args.key),
+          child: const _i3.AddCarScreen(),
           opaque: true,
           barrierDismissible: false);
     }
@@ -96,21 +94,9 @@ class CarDetailsScreenRouteArgs {
 
 /// generated route for
 /// [_i3.AddCarScreen]
-class AddCarScreenRoute extends _i4.PageRouteInfo<AddCarScreenRouteArgs> {
-  AddCarScreenRoute({_i5.Key? key})
-      : super(AddCarScreenRoute.name,
-            path: 'addCarsScreen', args: AddCarScreenRouteArgs(key: key));
+class AddCarScreenRoute extends _i4.PageRouteInfo<void> {
+  const AddCarScreenRoute()
+      : super(AddCarScreenRoute.name, path: 'addCarsScreen');
 
   static const String name = 'AddCarScreenRoute';
-}
-
-class AddCarScreenRouteArgs {
-  const AddCarScreenRouteArgs({this.key});
-
-  final _i5.Key? key;
-
-  @override
-  String toString() {
-    return 'AddCarScreenRouteArgs{key: $key}';
-  }
 }

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:car_garage/bloc_cg/car_list/car_list_bloc.dart';
+import 'package:car_garage/bloc_cg/persons_list/persons_list_bloc.dart';
 import 'package:car_garage/common/colors.dart';
 import 'package:car_garage/common/styles.dart';
 import 'package:car_garage/route/router.gr.dart';
@@ -19,7 +20,8 @@ class CarListScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          AutoRouter.of(context).navigate(AddCarScreenRoute());
+          AutoRouter.of(context).navigate(const AddCarScreenRoute());
+          BlocProvider.of<PersonsListBloc>(context).add(FetchPersonsList());
         },
       ),
       child: Column(

@@ -30,8 +30,8 @@ class CarDto {
     registration = json["registration"].toString();
     year = DateTime.tryParse(json["year"]);
     ownerId = json["ownerId"].toString();
-    lat = json["lat"];
-    lng = json["lng"];
+    lat = num.tryParse(json["lat"].toString());
+    lng = num.tryParse(json["lng"].toString());
   }
 
   Map<String, dynamic> toJson() {

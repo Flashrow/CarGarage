@@ -6,7 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AddCarMapWidget extends StatefulWidget {
-  const AddCarMapWidget({Key? key}) : super(key: key);
+  final Function(LatLng)? setCarPosition;
+  const AddCarMapWidget({
+    Key? key,
+    this.setCarPosition,
+  }) : super(key: key);
   @override
   State<AddCarMapWidget> createState() => _AddCarMapWidgetState();
 }
@@ -51,5 +55,6 @@ class _AddCarMapWidgetState extends State<AddCarMapWidget> {
         visible: true,
       );
     });
+    if (widget.setCarPosition != null) widget.setCarPosition!(latLng);
   }
 }
