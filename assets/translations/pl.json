@@ -21,5 +21,9 @@
   "addCarTitle" : "Dodawanie samochodu",
   "selectCarLocationOnMap" : "Zaznacz lokalizację pojazdu na mapie",
   "pickCarColor" : "Wybierz kolor samochodu",
-  "addCar" : "Dodaj samochód"
+  "addCar" : "Dodaj samochód",
+  "invalidYear" : "Nieprawidłowy rok produkcji",
+  "required" : "Wymagane",
+  "carColor" : "Kolor samochodu",
+  "carOwner" : "Właściciel samochodu"
 }

@@ -166,7 +166,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 28),
                         child: Text(
-                          "Car color:",
+                          "carColor".tr() + ":",
                           style:
                               regularSemiboldText.apply(color: cPrimaryColor),
                         ),
@@ -200,7 +200,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 28),
                         child: Text(
-                          "Car owner:",
+                          "carOwner".tr() + ":",
                           style:
                               regularSemiboldText.apply(color: cPrimaryColor),
                         ),

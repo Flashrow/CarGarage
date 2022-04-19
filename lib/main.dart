@@ -35,7 +35,6 @@ void main() async {
         fallbackLocale: const Locale('pl'),
         child: MyApp(_navigatorKey)));
   }, (error, stackTrace) {
-    throw error;
     if (_navigatorKey.currentContext != null) {
       ScaffoldMessenger.of(_navigatorKey.currentContext!)
           .showSnackBar(const SnackBar(

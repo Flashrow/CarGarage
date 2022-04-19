@@ -21,5 +21,9 @@
   "addCarTitle" : "Adding car",
   "selectCarLocationOnMap" : "Select car location on map",
   "addCar" : "Add car",
-  "pickCarColor" : "Pick car color"
+  "pickCarColor" : "Pick car color",
+  "invalidYear" : "Invalid production year",
+  "required" : "Required",
+  "carColor" : "Car color",
+  "carOwner" : "Car owner"
 }
