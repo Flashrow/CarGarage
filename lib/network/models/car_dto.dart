@@ -38,12 +38,12 @@ class CarDto {
     var map = <String, dynamic>{};
     map["brand"] = brand;
     map["model"] = model;
-    map["color"] = color;
+    map["color"] = '#${color?.value.toRadixString(16).substring(2)}';
     map["registration"] = registration;
     map["year"] = year?.toIso8601String();
     map["ownerId"] = ownerId;
-    map["lat"] = lat;
-    map["lng"] = lng;
+    map["lat"] = lat?.toStringAsFixed(4);
+    map["lng"] = lng?.toStringAsFixed(4);
     return map;
   }
 }

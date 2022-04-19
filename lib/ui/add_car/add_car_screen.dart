@@ -1,6 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:car_garage/bloc_cg/form_field/validated_form_field_cubit.dart';
 import 'package:car_garage/bloc_cg/persons_list/persons_list_bloc.dart';
 import 'package:car_garage/common/styles.dart';
+import 'package:car_garage/network/models/car_dto.dart';
+import 'package:car_garage/repository/car_list_repository.dart';
 import 'package:car_garage/ui/add_car/add_car_map_widget.dart';
 import 'package:car_garage/ui/base_screen.dart';
 import 'package:car_garage/ui/widget/custom_textfield_widget.dart';
@@ -12,6 +15,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../bloc_cg/add_car/add_car_bloc.dart';
 import '../../bloc_cg/add_car/add_car_field_enum.dart';
+import '../../bloc_cg/car_list/car_list_bloc.dart';
 import '../../common/colors.dart';
 import '../../network/models/person_dto.dart';
 import '../widget/custom_button_widget.dart';
@@ -24,7 +28,7 @@ class AddCarScreen extends StatefulWidget {
 }
 
 class _AddCarScreenState extends State<AddCarScreen> {
-  final AddCarBloc addCarBloc = AddCarBloc();
+  final AddCarBloc addCarBloc = AddCarBloc(CarListRepository());
   late ValidatedFormFieldCubit brandFieldCubit;
   late ValidatedFormFieldCubit modelFieldCubit;
   late ValidatedFormFieldCubit registrationFieldCubit;
@@ -58,10 +62,10 @@ class _AddCarScreenState extends State<AddCarScreen> {
         "required": (text) => text.isNotEmpty,
       },
       onChangeListener: () {
-        SetFieldValidity(
+        addCarBloc.add(SetFieldValidity(
           fieldType: AddCarFieldEnum.model,
           isValid: modelFieldCubit.isValid,
-        );
+        ));
       },
     );
     registrationFieldCubit = ValidatedFormFieldCubit(
@@ -69,10 +73,10 @@ class _AddCarScreenState extends State<AddCarScreen> {
         "required": (text) => text.isNotEmpty,
       },
       onChangeListener: () {
-        SetFieldValidity(
+        addCarBloc.add(SetFieldValidity(
           fieldType: AddCarFieldEnum.registration,
           isValid: registrationFieldCubit.isValid,
-        );
+        ));
       },
     );
     yearFieldCubit = ValidatedFormFieldCubit(
@@ -83,10 +87,10 @@ class _AddCarScreenState extends State<AddCarScreen> {
         },
       },
       onChangeListener: () {
-        SetFieldValidity(
+        addCarBloc.add(SetFieldValidity(
           fieldType: AddCarFieldEnum.year,
           isValid: yearFieldCubit.isValid,
-        );
+        ));
       },
     );
   }
@@ -94,141 +98,172 @@ class _AddCarScreenState extends State<AddCarScreen> {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20, top: 20, bottom: 16),
-            child: Text(
-              "addCarTitle".tr(),
-              style: title1Text,
-            ),
-          ),
-          Divider(
-            color: cPrimaryColor.withOpacity(0.7),
-            thickness: 2,
-            height: 2,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomTextfieldWidget(
-                          label: "brand".tr(),
-                          hint: "Honda",
-                          formFieldCubit: brandFieldCubit,
+      child: BlocConsumer<AddCarBloc, AddCarState>(
+        bloc: addCarBloc,
+        listener: (context, carBlocState) {
+          if (carBlocState is CarAddedSuccessfully) {
+            BlocProvider.of<CarListBloc>(context).add(FetchCarList());
+            AutoRouter.of(context).pop();
+          }
+        },
+        builder: (context, carBlocState) {
+          if (carBlocState is AddingCarLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20, top: 20, bottom: 16),
+                child: Text(
+                  "addCarTitle".tr(),
+                  style: title1Text,
+                ),
+              ),
+              Divider(
+                color: cPrimaryColor.withOpacity(0.7),
+                thickness: 2,
+                height: 2,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomTextfieldWidget(
+                              label: "brand".tr(),
+                              hint: "Honda",
+                              formFieldCubit: brandFieldCubit,
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextfieldWidget(
+                              label: "model".tr(),
+                              hint: "Civic",
+                              formFieldCubit: modelFieldCubit,
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextfieldWidget(
+                              label: "registrationNumber".tr(),
+                              hint: "AB1234",
+                              formFieldCubit: registrationFieldCubit,
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextfieldWidget(
+                              label: "productionYear".tr(),
+                              hint: "1999",
+                              formFieldCubit: yearFieldCubit,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                        CustomTextfieldWidget(
-                          label: "model".tr(),
-                          hint: "Civic",
-                          formFieldCubit: modelFieldCubit,
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 28),
+                        child: Text(
+                          "Car color:",
+                          style:
+                              regularSemiboldText.apply(color: cPrimaryColor),
                         ),
-                        const SizedBox(height: 10),
-                        CustomTextfieldWidget(
-                          label: "registrationNumber".tr(),
-                          hint: "AB1234",
-                          formFieldCubit: registrationFieldCubit,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: carColor,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8)),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            CustomButtonWidget(
+                              title: "pickCarColor".tr(),
+                              onTap: () {
+                                FocusScope.of(context).unfocus();
+                                onPickCarColorButton(context);
+                              },
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                        CustomTextfieldWidget(
-                          label: "productionYear".tr(),
-                          hint: "1999",
-                          formFieldCubit: yearFieldCubit,
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 28),
+                        child: Text(
+                          "Car owner:",
+                          style:
+                              regularSemiboldText.apply(color: cPrimaryColor),
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 28),
-                    child: Text(
-                      "Car color:",
-                      style: regularSemiboldText.apply(color: cPrimaryColor),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: carColor,
-                            borderRadius:
-                                BorderRadius.all(const Radius.circular(8)),
+                      ),
+                      BlocBuilder<PersonsListBloc, PersonsListState>(
+                        builder: (context, state) {
+                          if (state is PersonsListFetched) {
+                            return pickOwnerDropdown(state);
+                          }
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 28),
+                        child: Text(
+                          "selectCarLocationOnMap".tr(),
+                          style: regularSemiboldText.apply(
+                            color: cPrimaryColor,
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        CustomButtonWidget(
-                          title: "pickCarColor".tr(),
-                          onTap: () {
-                            onPickCarColorButton(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 28),
-                    child: Text(
-                      "Car owner:",
-                      style: regularSemiboldText.apply(color: cPrimaryColor),
-                    ),
-                  ),
-                  BlocBuilder<PersonsListBloc, PersonsListState>(
-                    builder: (context, state) {
-                      if (state is PersonsListFetched) {
-                        return pickOwnerDropdown(state);
-                      }
-                      return CircularProgressIndicator();
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 28),
-                    child: Text(
-                      "selectCarLocationOnMap".tr(),
-                      style: regularSemiboldText.apply(
-                        color: cPrimaryColor,
                       ),
-                    ),
+                      AddCarMapWidget(setCarPosition: (pinPosition) {
+                        carPosition = pinPosition;
+                        addCarBloc.add(SetFieldValidity(
+                            fieldType: AddCarFieldEnum.lat, isValid: true));
+                        addCarBloc.add(SetFieldValidity(
+                            fieldType: AddCarFieldEnum.lng, isValid: true));
+                      }),
+                    ],
                   ),
-                  AddCarMapWidget(setCarPosition: (pinPosition) {
-                    carPosition = pinPosition;
-                    addCarBloc.add(SetFieldValidity(
-                        fieldType: AddCarFieldEnum.lat, isValid: true));
-                    addCarBloc.add(SetFieldValidity(
-                        fieldType: AddCarFieldEnum.lng, isValid: true));
-                  }),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          BlocBuilder<AddCarBloc, AddCarState>(
-            bloc: addCarBloc,
-            builder: (context, state) {
-              return InkWell(
-                child: Container(
-                  height: 40,
-                  color: state is FormValid ? Colors.green : Colors.red,
                 ),
-              );
-            },
-          ),
-          const SizedBox(height: 10),
-        ],
+              ),
+              const SizedBox(height: 10),
+              Center(
+                child: CustomButtonWidget(
+                  isActive: carBlocState is FormValid,
+                  onTap: () {
+                    addCarBloc.add(
+                      AddCar(
+                        CarDto(
+                          brand: brandFieldCubit.getText(),
+                          model: modelFieldCubit.getText(),
+                          registration: registrationFieldCubit.getText(),
+                          year: DateTime.tryParse(
+                              yearFieldCubit.getText() + "-01-01"),
+                          color: carColor,
+                          ownerId: carOwner?.id,
+                          lat: carPosition?.latitude,
+                          lng: carPosition?.longitude,
+                        ),
+                      ),
+                    );
+                  },
+                  title: "addCar".tr(),
+                  width: 240,
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+          );
+        },
       ),
     );
   }

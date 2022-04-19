@@ -31,7 +31,11 @@ class CustomTextfieldWidget extends StatelessWidget {
               child: Text(
                 label ?? "label",
                 style: regularSemiboldText.apply(
-                  color: state is FormFieldInvalid ? Colors.red : cPrimaryColor,
+                  color: state is UnfocusField
+                      ? null
+                      : state is FormFieldInvalid
+                          ? Colors.red
+                          : cPrimaryColor,
                 ),
               ),
             ),

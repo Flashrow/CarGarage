@@ -16,7 +16,6 @@ class ValidatedFormFieldCubit extends Cubit<ValidatedFormFieldState> {
     if (validators != null) {
       _textEditingController.addListener(() {
         _validateField();
-        // if (_focusNode.hasFocus == false) _focusNode.requestFocus();
       });
     }
     if (onChangeListener != null) {
@@ -47,4 +46,6 @@ class ValidatedFormFieldCubit extends Cubit<ValidatedFormFieldState> {
   TextEditingController getController() => _textEditingController;
 
   FocusNode getFocusNode() => _focusNode;
+
+  String getText() => _textEditingController.text;
 }

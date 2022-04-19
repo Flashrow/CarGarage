@@ -17,5 +17,9 @@
   "model" : "Model",
   "productionYear" : "Production year",
   "ownerData" : "Owner data",
-  "carLocation" : "Car location"
+  "carLocation" : "Car location",
+  "addCarTitle" : "Adding car",
+  "selectCarLocationOnMap" : "Select car location on map",
+  "addCar" : "Add car",
+  "pickCarColor" : "Pick car color"
 }

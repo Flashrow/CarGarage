@@ -19,4 +19,9 @@ abstract class ApiProvider {
 
   @GET(Endpoints.personList)
   Future<List<PersonDto>> getPersonList();
+
+  @POST(Endpoints.carList)
+  Future<String> addNewCar({
+    @Body() CarDto? newCar,
+  });
 }

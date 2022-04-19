@@ -9,3 +9,9 @@ class SetFieldValidity extends AddCarEvent {
 
   SetFieldValidity({required this.fieldType, required this.isValid});
 }
+
+class AddCar extends AddCarEvent {
+  final CarDto newCar;
+
+  AddCar(this.newCar);
+}
