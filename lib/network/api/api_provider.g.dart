@@ -6,8 +6,6 @@ part of 'api_provider.dart';
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps
-
 class _ApiProvider implements ApiProvider {
   _ApiProvider(this._dio, {this.baseUrl});
 

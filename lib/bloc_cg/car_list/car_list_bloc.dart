@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:car_garage/repository/car_list_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import '../../network/models/car_dto.dart';
